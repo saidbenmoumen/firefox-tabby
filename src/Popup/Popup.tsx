@@ -27,11 +27,6 @@ const Popup: React.FC = () => {
   const [activeId, setActiveId] = React.useState<string>("default");
   const [groups, setGroups] = React.useState<GroupType[]>([]);
 
-  const activeGroup = useMemo(
-    () => groups.find((g) => g.id === activeId),
-    [groups, activeId]
-  );
-
   const handleCreateGroup = async (groupName: string) => {
     // get visible tabs
     const visible_tabs = await browser.tabs.query({ hidden: false });
@@ -88,14 +83,16 @@ const Popup: React.FC = () => {
       await browser.tabs.show(showIds);
     };
 
-    if (activeId)
+    if (activeId) {
       switchWorkspace(activeId)
         .then(() => {
           console.log("switched workspace", activeId);
+          setRouter({ route: "list" });
         })
         .catch(() => {
           console.log("failed to switch workspace", activeId);
         });
+    }
   }, [activeId]);
 
   return (
@@ -111,9 +108,8 @@ const Popup: React.FC = () => {
           onClose={() => setRouter({ route: "list" })}
           onDelete={async (groupId) => {
             // cleanup group tabs
-            const groups = (await browser.storage.local.get(
-              "groups"
-            )) as GroupType[];
+            const data = await browser.storage.local.get("groups");
+            const groups = data.groups as GroupType[];
             await browser.tabs.remove(
               groups.find((g) => g.id === groupId)?.ids || []
             );

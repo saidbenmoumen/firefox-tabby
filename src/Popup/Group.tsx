@@ -38,7 +38,7 @@ export const Group = ({
       <TopBar
         onBack={() => onClose()}
         title={group.name}
-        onDelete={() => onDelete(groupId)}
+        onDelete={groupId !== "default" ? () => onDelete(groupId) : undefined}
       />
       <ul className="flex flex-col p-3">
         {tabs.map((tab) => (
