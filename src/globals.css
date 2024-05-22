@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-zinc-900 text-zinc-200;
+}
+
+kbd {
+  @apply bg-zinc-800 border-2 border-zinc-700 rounded text-zinc-400 text-2xs leading-none p-1 uppercase;
+}

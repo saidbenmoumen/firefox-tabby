@@ -1,21 +1,42 @@
 {
-	"extends": "@abhijithvijayan/tsconfig",
-	"compilerOptions": {
-		"target": "es5", // ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017','ES2018' or 'ESNEXT'.
-		"module": "esnext", // Module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', or 'ESNext'.
-		"lib": [
-			"dom",
-			"dom.iterable",
-			"esnext"
-		],
-		"declaration": false,
-		"isolatedModules": true,
-		/* Additional Checks */
-		"useDefineForClassFields": true,
-		"skipLibCheck": true,
-	},
-	"include": [
-		"source",
-		"webpack.config.js"
-	]
+  "compilerOptions": {
+    // "declaration": true,
+    // "noEmitOnError": true,
+    // "newLine": "lf",
+    // "removeComments": true,
+    // "noImplicitAny": true,
+    // "strictNullChecks": true,
+    // "strictFunctionTypes": true,
+    // "strictBindCallApply": true,
+    // "strictPropertyInitialization": false,
+    // "noImplicitThis": true,
+    // "alwaysStrict": true,
+    // "noUnusedLocals": true,
+    // "noUnusedParameters": true,
+    // "noImplicitReturns": true,
+    // "noFallthroughCasesInSwitch": true,
+    // "allowSyntheticDefaultImports": true,
+    // "experimentalDecorators": true,
+    // "emitDecoratorMetadata": true,
+    // "forceConsistentCasingInFileNames": true,
+    // "stripInternal": false,
+    "baseUrl": ".",
+    "target": "es5",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "paths": {
+      "@tabby/*": ["./src/*"],
+    },
+  },
+  "include": ["src", "webpack.config.js"],
 }
