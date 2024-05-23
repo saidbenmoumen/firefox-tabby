@@ -1,5 +1,5 @@
 import "@tabby/globals.css";
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import { Group } from "./Group";
 import { CreateGroup } from "./CreateGroup";
 import { GroupList } from "./GroupList";
@@ -27,7 +27,14 @@ const Popup: React.FC = () => {
   const [activeId, setActiveId] = React.useState<string>("default");
   const [groups, setGroups] = React.useState<GroupType[]>([]);
 
-  const handleCreateGroup = async (groupName: string) => {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const handleCreateGroup = async ({
+    name,
+    icon,
+  }: {
+    name: string;
+    icon: string;
+  }) => {
     // get visible tabs
     const visible_tabs = await browser.tabs.query({ hidden: false });
     // visible tabs ids
@@ -41,7 +48,7 @@ const Popup: React.FC = () => {
       active: id,
       groups: [
         ...groups,
-        { id, name: groupName, ids: groups.length > 0 ? [] : ids },
+        { id, name: name, ids: groups.length > 0 ? [] : ids, icon },
       ],
     });
     // close popup
@@ -95,6 +102,42 @@ const Popup: React.FC = () => {
     }
   }, [activeId]);
 
+  useEffect(() => {
+    if (inputRef && inputRef.current) {
+      const handleKeyDown = async (e: KeyboardEvent) => {
+        console.log("keypress", e.key);
+
+        if (e.key === "Escape") {
+          window.close();
+        }
+
+        if (/[0-9]/.test(e.key)) {
+          const data = await browser.storage.local.get("groups");
+
+          const group = data.groups[parseInt(e.key) - 1];
+
+          if (group) {
+            console.log("switching to group", group.id);
+            browser.storage.local
+              .set({
+                active: group.id,
+              })
+              .then(() => {
+                console.log("switching to group", group.id);
+              })
+              .catch(() => {
+                console.log("failed to switch to group", group.id);
+              });
+          }
+        }
+      };
+      inputRef.current.addEventListener("keydown", handleKeyDown);
+      return () => {
+        inputRef?.current?.removeEventListener("keydown", handleKeyDown);
+      };
+    }
+  }, [inputRef]);
+
   return (
     <section id="popup" className="min-w-60">
       {router.route === "create" ? (
@@ -128,30 +171,39 @@ const Popup: React.FC = () => {
           }}
         />
       ) : (
-        <GroupList
-          activeId={activeId}
-          groups={groups}
-          onCreateGroup={() =>
-            setRouter({
-              route: "create",
-            })
-          }
-          onGroupDetails={(groupId) => {
-            setRouter({
-              route: "group",
-              groupId,
-            });
-          }}
-          onChangeGroup={async (groupId) => {
-            // if group already active throw error
-            if (activeId === groupId) {
-              console.log("group already active");
-              return;
+        <>
+          <input
+            className="m-1 rounded px-3 py-1 bg-zinc-700 border-none"
+            placeholder="Cmd..."
+            ref={inputRef}
+            type="text"
+            autoFocus
+          />
+          <GroupList
+            activeId={activeId}
+            groups={groups}
+            onCreateGroup={() =>
+              setRouter({
+                route: "create",
+              })
             }
-            // change active group state
-            browser.storage.local.set({ active: groupId });
-          }}
-        />
+            onGroupDetails={(groupId) => {
+              setRouter({
+                route: "group",
+                groupId,
+              });
+            }}
+            onChangeGroup={async (groupId) => {
+              // if group already active throw error
+              if (activeId === groupId) {
+                console.log("group already active");
+                return;
+              }
+              // change active group state
+              browser.storage.local.set({ active: groupId });
+            }}
+          />
+        </>
       )}
     </section>
   );

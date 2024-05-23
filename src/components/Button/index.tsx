@@ -38,7 +38,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       isIcon: _isIcon,
       justify,
       readonly,
-      shadow,
+
       type = "button",
       ...props
     }: ButtonProps,
@@ -69,7 +69,6 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             loading,
             disabled,
             readonly,
-            shadow,
             class: "",
           }),
           className,

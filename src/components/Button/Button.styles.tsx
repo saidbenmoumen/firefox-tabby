@@ -35,10 +35,6 @@ export const tvStyles = tv({
     readonly: {
       true: "pointer-events-none",
     },
-    shadow: {
-      true: "shadow-sm",
-      false: " shadow-none",
-    },
     outlined: {
       solid: "border !border-opacity-100",
       light: "border border-opacity-20",
@@ -58,6 +54,5 @@ export const tvStyles = tv({
     size: "sm",
     justify: "center",
     outlined: "light",
-    shadow: true,
   },
 });

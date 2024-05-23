@@ -1,14 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import Button from "@tabby/components/Button";
 import { TopBar } from "@tabby/components/TopBar";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { type Icon, icons } from "@tabby/utils/icons";
 
 export const CreateGroup = ({
   onCreate,
   onCancel,
 }: {
-  onCreate: (groupName: string) => void;
+  onCreate: (data: { name: string; icon: Icon }) => void;
   onCancel: () => void;
 }) => {
+  const [icon, setIcon] = React.useState<Icon>("folder");
   const [groupName, setGroupName] = React.useState<string>("");
   return (
     <div>
@@ -20,9 +24,28 @@ export const CreateGroup = ({
           value={groupName}
           onChange={(e) => setGroupName(e.target.value)}
         />
+        <div className="grid grid-cols-7 gap-1">
+          {(Object.keys(icons) as Icon[]).map((iconName: Icon) => (
+            <Button
+              key={iconName}
+              onClick={() => setIcon(iconName)}
+              color={icon === iconName ? "green" : undefined}
+              variant={icon === iconName ? "solid" : "subtle"}
+              isIcon
+              size="xs"
+            >
+              <FontAwesomeIcon icon={icons[iconName as Icon]} />
+            </Button>
+          ))}
+        </div>
         <Button
           disabled={groupName.length <= 0}
-          onClick={() => onCreate(groupName)}
+          onClick={() =>
+            onCreate({
+              name: groupName,
+              icon,
+            })
+          }
         >
           Create
         </Button>
